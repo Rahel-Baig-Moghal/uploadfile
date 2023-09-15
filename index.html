@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload to S3</title>
+</head>
+<body>
+    <h1>Upload File to S3</h1>
+    <form id="upload-form" enctype="multipart/form-data">
+        <input type="file" id="file-input" name="file">
+        <button type="button" onclick="uploadFile()">Upload</button>
+    </form>
+    <p id="message"></p>
+
+    <script>
+        function uploadFile() {
+            const fileInput = document.getElementById('file-input');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert("Please select a file.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const url = 'https://kmlvmujrlj.execute-api.eu-north-1.amazonaws.com/dev/{bucket}/{filename}'; // Replace with your actual URL
+
+            fetch(url, {
+                method: 'PUT',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById('message').textContent = 'File uploaded successfully!';
+                } else {
+                    document.getElementById('message').textContent = 'File upload failed.';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('message').textContent = 'An error occurred.';
+            });
+        }
+    </script>
+</body>
+</html>
